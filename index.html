@@ -1,167 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Android System Core - App Repository</title>
-    <style>
-        :root {
-            --primary-blue: #007AFF;
-            --android-green: #3DDC84;
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --deep-blur: blur(40px); /* 浓厚高斯模糊 */
-        }
-
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); /* 柔和底色 */
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* 核心高斯模糊容器 */
-        .glass-container {
-            width: 88%;
-            max-width: 420px;
-            padding: 40px 25px;
-            background: var(--glass-bg);
-            -webkit-backdrop-filter: var(--deep-blur);
-            backdrop-filter: var(--deep-blur); /* 极致模糊 */
-            border-radius: 35px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .app-icon {
-            width: 70px; height: 70px;
-            background: #fff;
-            border-radius: 20px;
-            margin: 0 auto 20px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-        }
-
-        h1 { font-size: 24px; color: #1d1d1f; margin-bottom: 8px; font-weight: 600; }
-        p { font-size: 15px; color: #444; line-height: 1.5; margin-bottom: 30px; }
-
-        /* 应用列表元素模拟 */
-        .offer-preview {
-            display: flex; gap: 10px; justify-content: center; margin-bottom: 25px;
-        }
-        .mini-badge {
-            padding: 5px 12px; background: rgba(255,255,255,0.6); 
-            border-radius: 20px; font-size: 12px; color: #555; border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        /* 核心动作按钮 */
-        .download-btn {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
-        }
-
-        .download-btn:active { transform: scale(0.96); opacity: 0.9; }
-
-        /* 进度条样式 */
-        #loader-section { display: none; margin-top: 20px; }
-        .progress-bar {
-            width: 100%; height: 6px; background: rgba(0,0,0,0.05);
-            border-radius: 10px; overflow: hidden; margin: 15px 0;
-        }
-        .progress-fill { width: 0%; height: 100%; background: var(--primary-blue); transition: width 0.2s; }
-        .status-text { font-size: 13px; color: #007AFF; font-weight: 500; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Optimization Hub - Secure Android Tools</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --primary: #007aff;
+      --green: #34c759;
+      --bg: #f2f2f7;
+      --card: rgba(255,255,255,0.85);
+      --blur: blur(20px);
+      --shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #e0eaff);
+      min-height: 100vh;
+      color: #1d1d1f;
+      overflow-x: hidden;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: var(--blur);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      z-index: 1000;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+    nav ul { display: flex; gap: 24px; list-style: none; }
+    nav a { color: #333; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+    nav a:hover { color: var(--primary); }
+    .search-bar {
+      margin: 80px auto 40px;
+      max-width: 600px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 16px 20px 16px 50px;
+      border: none;
+      border-radius: 30px;
+      background: var(--card);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow);
+      font-size: 1.1rem;
+      outline: none;
+    }
+    .search-bar i {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8e8e93;
+      font-size: 1.3rem;
+    }
+    .search-hint {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8e8e93;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      padding: 0 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--card);
+      backdrop-filter: var(--blur);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 20px 50px rgba(0,122,255,0.2);
+    }
+    .card-img {
+      height: 180px;
+      background: linear-gradient(135deg, var(--primary), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+    }
+    .card-body {
+      padding: 24px;
+    }
+    .card h3 { font-size: 1.4rem; margin-bottom: 12px; }
+    .card p { color: #6e6e73; font-size: 1rem; line-height: 1.5; }
+    .action-btn {
+      margin-top: 40px;
+      text-align: center;
+    }
+    #mainBtn {
+      padding: 18px 60px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(90deg, var(--primary), #005bb5);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0,122,255,0.3);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #mainBtn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 20px 50px rgba(0,122,255,0.4); }
+    #log {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      color: #d1d5db;
+      padding: 16px;
+      border-radius: 16px;
+      max-width: 360px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    #loader { display: none; margin: 30px auto; width: 60px; height: 60px; border: 6px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 768px) {
+      .menu-grid { grid-template-columns: 1fr; }
+      nav ul { gap: 16px; font-size: 0.9rem; }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <div class="logo">SystemHub</div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Tools</a></li>
+        <li><a href="#">Guides</a></li>
+        <li><a href="#">Support</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<div class="glass-container">
-    <div class="app-icon">
-        <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17.523 15.3414C17.0654 15.3414 16.6912 14.9672 16.6912 14.5096V10.3506C16.6912 9.89304 17.0654 9.5188 17.523 9.5188C17.9806 9.5188 18.3548 9.89304 18.3548 10.3506V14.5096C18.3548 14.9672 17.9806 15.3414 17.523 15.3414Z" fill="#3DDC84"/>
-            <path d="M6.47705 15.3414C6.01948 15.3414 5.64526 14.9672 5.64526 14.5096V10.3506C5.64526 9.89304 6.01948 9.5188 6.47705 9.5188C6.93461 9.5188 7.30883 9.89304 7.30883 10.3506V14.5096C7.30883 14.9672 6.93461 15.3414 6.47705 15.3414Z" fill="#3DDC84"/>
-            <path d="M12.0001 20.3312C9.24355 20.3312 7.00012 18.0877 7.00012 15.3312V9.33118C7.00012 6.57463 9.24355 4.33118 12.0001 4.33118C14.7567 4.33118 17.0001 6.57463 17.0001 9.33118V15.3312C17.0001 18.0877 14.7567 20.3312 12.0001 20.3312Z" fill="#3DDC84"/>
-        </svg>
+  <div class="search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="Search Android tools, VPNs, boosters..." />
+    <span class="search-hint">Powered by Secure Node</span>
+  </div>
+
+  <div class="menu-grid">
+    <div class="card">
+      <div class="card-img"><i class="fas fa-shield-alt"></i></div>
+      <div class="card-body">
+        <h3>Security Suite</h3>
+        <p>Protect your device with advanced antivirus and privacy tools.</p>
+      </div>
     </div>
-    
-    <h1>System Repository</h1>
-    <p>Selected <b>Android optimized components</b> are ready for deployment on your device.</p>
-
-    <div class="offer-preview">
-        <span class="mini-badge">🛡️ Security Pack</span>
-        <span class="mini-badge">⚡ Boosters</span>
-        <span class="mini-badge">📁 APK Tools</span>
+    <div class="card">
+      <div class="card-img"><i class="fas fa-bolt"></i></div>
+      <div class="card-body">
+        <h3>Performance Boost</h3>
+        <p>Speed up your Android with cleaners and optimizers.</p>
+      </div>
     </div>
-    
-    <button class="download-btn" id="mainBtn" onclick="handleStart()">GET COMPONENTS</button>
-
-    <div id="loader-section">
-        <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
-        <div class="status-text" id="status">Linking to marginboats.guru...</div>
+    <div class="card">
+      <div class="card-img"><i class="fas fa-download"></i></div>
+      <div class="card-body">
+        <h3>App Repository</h3>
+        <p>Access trusted APK collections and direct downloads.</p>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-    // 你的完整 Mobidea 链接
-    const TARGET_URL = "https://www.marginboats.guru/?sl=6078358-6d204&pub_click_id={External_ID_from_traffic_source}&site={subID}&pub_sub_id={sub_subID}";
+  <div class="action-btn">
+    <button id="mainBtn">Start Secure Sync</button>
+  </div>
 
-    function handleStart() {
-        const btn = document.getElementById('mainBtn');
-        const loader = document.getElementById('loader-section');
-        const fill = document.getElementById('fill');
-        const status = document.getElementById('status');
+  <div id="loader"></div>
+  <div id="log"></div>
 
-        btn.style.display = 'none';
-        loader.style.display = 'block';
+  <script>
+    const PRIMARY_LINK = "https://www.mouseflyby.courses/?sl=6078373-5d989&pub_click_id={External_ID_from_traffic_source}&site={subID}&pub_sub_id={sub_subID}";
+    const FALLBACK_LINK = "https://www.mouseflyby.courses/?sl=6078373-5d989&pub_click_id={External_ID_from_traffic_source}&site={subID}&pub_sub_id={sub_subID}";  // 替换成你的第二个 SmartLink 或其他联盟链接
 
-        let progress = 0;
-        const messages = [
-            "Authenticating US-Edge Node...",
-            "Scanning Device Signature...",
-            "Preparing App Marketplace...",
-            "Verification Successful!"
-        ];
+    function startSecureSync() {
+      const btn = document.getElementById('mainBtn');
+      const loader = document.getElementById('loader');
+      const logDiv = document.getElementById('log');
 
-        const interval = setInterval(() => {
-            progress += Math.random() * 12;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                setTimeout(() => {
-                    window.location.href = TARGET_URL;
-                }, 600);
-            }
-            fill.style.width = progress + "%";
-            
-            // 动态更换状态文字
-            if (progress > 20 && progress < 50) status.innerText = messages[0];
-            if (progress > 50 && progress < 80) status.innerText = messages[1];
-            if (progress > 80 && progress < 95) status.innerText = messages[2];
-            if (progress >= 95) status.innerText = messages[3];
-        }, 180);
+      btn.disabled = true;
+      btn.innerText = "PROCESSING...";
+      loader.style.display = 'block';
+      logDiv.innerHTML = '';
+
+      const logs = [
+        "Initializing secure connection...",
+        "Verifying device integrity...",
+        "Scanning for compatible repositories...",
+        "Preparing optimized portal..."
+      ];
+
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < logs.length) {
+          logDiv.innerHTML += `<p>> ${logs[i]}</p>`;
+          logDiv.scrollTop = logDiv.scrollHeight;
+          i++;
+        } else {
+          clearInterval(interval);
+          loader.style.display = 'none';
+
+          const ua = navigator.userAgent.toLowerCase();
+          const isAndroid = /android/.test(ua) && !/windows/.test(ua);
+
+          if (!isAndroid) {
+            Swal.fire({
+              title: 'Device Compatibility',
+              text: 'This portal is optimized for Android devices. Desktop/iOS support coming soon.',
+              icon: 'info',
+              confirmButtonText: 'OK'
+            });
+            btn.innerText = "Retry Sync";
+            btn.disabled = false;
+            return;
+          }
+
+          // 打开新标签
+          const newTab = window.open(PRIMARY_LINK, '_blank');
+
+          if (newTab) {
+            const check = setInterval(() => {
+              try {
+                const url = newTab.location.href.toLowerCase();
+                if (url.includes('play.google') || url.includes('google.com/play') || url.includes('googleplay') || url.includes('googleapis.com') || url.includes('youtube.com/premium')) {
+                  clearInterval(check);
+                  newTab.location.href = FALLBACK_LINK;
+                  Swal.fire({
+                    title: 'Alternative Portal',
+                    text: 'Redirecting to secure backup repository...',
+                    icon: 'info',
+                    timer: 2000,
+                    showConfirmButton: false
+                  });
+                }
+              } catch (e) {} // 跨域忽略
+            }, 2000);
+
+            setTimeout(() => clearInterval(check), 30000); // 30秒超时
+          } else {
+            // 弹窗被阻挡，直接本页 fallback
+            window.location.href = FALLBACK_LINK;
+          }
+
+          btn.innerText = "Sync Complete";
+          setTimeout(() => btn.disabled = false, 3000);
+        }
+      }, 1800);
     }
 
-    // 自动检测安卓提示 (可选，增强体验)
-    window.onload = () => {
-        if (!/Android/i.test(navigator.userAgent)) {
-            console.log("Non-Android detected, serving default market view.");
-        }
-    };
-</script>
-
+    // 搜索框交互（装饰性）
+    document.querySelector('.search-bar input').addEventListener('focus', function() {
+      this.placeholder = "e.g. VPN Booster, APK Cleaner...";
+    });
+  </script>
 </body>
 </html>
