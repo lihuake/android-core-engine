@@ -3,264 +3,178 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    
     <meta name="monetag" content="3a4bde9bd2d977da5029f2351e625d62">
-    
-    <title>KAPTH - Android Application Core</title>
+    <title>KAPTH - Pro Android Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    
     <style>
         :root {
             --ios-blue: #007aff;
-            --ios-bg: #f5f5f7; /* 更优雅的背景色 */
-            --glass: rgba(255, 255, 255, 0.7);
-            --blur: blur(30px); /* 深度高斯模糊 */
+            --ios-bg: #f5f5f7;
+            --glass: rgba(255, 255, 255, 0.85);
+            --blur: blur(25px);
             --ios-text: #1d1d1f;
             --ios-gray: #8e8e93;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: var(--ios-bg); color: var(--ios-text); -webkit-font-smoothing: antialiased; }
+
+        /* 顶部导航增强 */
+        header { position: sticky; top: 0; z-index: 1000; background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); padding: 12px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.08); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .header-top h1 { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+
+        /* 分类滚动条 (新增内容) */
+        .categories { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 5px; scrollbar-width: none; }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-item { background: #e3e3e8; color: var(--ios-text); padding: 6px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+        .cat-item.active { background: var(--ios-blue); color: #fff; }
+
+        /* 搜索框 */
+        .search-container { padding: 20px; }
+        .search-box { position: relative; background: #e3e3e8; border-radius: 12px; display: flex; align-items: center; padding: 12px 16px; }
+        .search-box i { color: var(--ios-gray); margin-right: 12px; }
+        .search-box input { border: none; background: transparent; width: 100%; font-size: 17px; outline: none; }
+
+        /* 内容版块 */
+        .section { padding: 0 20px 25px; }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+        .section-header h2 { font-size: 22px; font-weight: 700; }
+        .section-header a { color: var(--ios-blue); text-decoration: none; font-size: 15px; }
+
+        .app-card-row { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
+        .app-card-row::-webkit-scrollbar { display: none; }
         
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif; 
-            background: var(--ios-bg); 
-            color: var(--ios-text);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+        /* 增加大卡片 (新增内容) */
+        .featured-card { min-width: 260px; height: 160px; background: linear-gradient(135deg, #007aff, #00c6ff); border-radius: 20px; padding: 20px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; position: relative; overflow: hidden; }
+        .featured-card i { position: absolute; top: -10px; right: -10px; font-size: 100px; opacity: 0.2; }
+        .featured-card h4 { font-size: 18px; margin-bottom: 4px; }
+        .featured-card p { font-size: 13px; opacity: 0.9; }
 
-        /* 动画定义 - iOS 弹性动画 (Elastic Spring) */
-        @keyframes ios-slide-up {
-            0% { transform: translateY(40px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes ios-scale-in {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes ios-fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        header { 
-            position: sticky; top: 0; z-index: 1000; 
-            background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-            padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.06);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        header h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
-
-        .search-container { padding: 20px 20px 10px; animation: ios-slide-up 0.5s ease-out; }
-        .search-box { 
-            position: relative; background: #e3e3e8; border-radius: 14px; 
-            display: flex; align-items: center; padding: 10px 16px; transition: 0.3s;
-        }
-        .search-box:focus-within { background: #fff; box-shadow: 0 0 0 3px rgba(0,122,255,0.2); }
-        .search-box i { color: var(--ios-gray); margin-right: 12px; font-size: 16px; }
-        .search-box input { border: none; background: transparent; width: 100%; font-size: 17px; outline: none; -webkit-appearance: none; }
-
-        .section-title { padding: 10px 20px; font-size: 20px; font-weight: 700; color: var(--ios-text); }
-        .app-list { padding: 0 20px; }
-        
-        /* 列表项的弹性进入动画 */
-        .app-item { 
-            display: flex; align-items: center; padding: 15px 0; border-bottom: 0.5px solid rgba(0,0,0,0.06); 
-            cursor: pointer; transition: 0.2s;
-            animation: ios-slide-up 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .app-item:active { background: rgba(0,0,0,0.03); border-radius: 12px; }
-
-        .app-icon { 
-            width: 62px; height: 62px; border-radius: 14px; margin-right: 16px; 
-            display: flex; align-items: center; justify-content: center; color: white; font-size: 26px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        
+        /* 传统列表 */
+        .app-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid rgba(0,0,0,0.05); cursor: pointer; }
+        .app-icon { width: 58px; height: 58px; border-radius: 12px; margin-right: 15px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; }
         .app-info { flex: 1; }
-        .app-info h3 { font-size: 18px; font-weight: 600; margin-bottom: 2px; }
-        .app-info p { font-size: 13px; color: var(--ios-gray); }
-        .get-btn { 
-            background: #fff; color: var(--ios-blue); 
-            padding: 7px 24px; border-radius: 20px; font-weight: 800; font-size: 15px; 
-            border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            transition: 0.2s;
-        }
-        .get-btn:active { background: var(--ios-blue); color: #fff; transform: scale(0.95); }
+        .app-info h3 { font-size: 16px; font-weight: 600; }
+        .app-info p { font-size: 12px; color: var(--ios-gray); }
+        .get-btn { background: #ececef; color: var(--ios-blue); padding: 5px 22px; border-radius: 20px; font-weight: 800; font-size: 14px; border: none; }
 
-        /* 核心优化：iOS 加载弹窗动画 (Modal Overlay) */
-        #ios-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            z-index: 2000; display: none;
-        }
+        /* 底部法律免责 (避开投诉关键) */
+        footer { padding: 40px 20px; font-size: 11px; color: #a1a1a6; line-height: 1.5; text-align: justify; }
 
-        #ios-modal {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 300px; background: rgba(255,255,255,0.9); border-radius: 20px;
-            padding: 30px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-            animation: ios-scale-in 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); /* 弹性缩放进入 */
-        }
-
-        #spinner { margin-bottom: 20px; }
-        .dot-loader {
-            width: 44px; height: 44px; border: 4px solid #e3e3e8; border-top: 4px solid var(--ios-blue);
-            border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto;
-        }
+        /* iOS 验证加载弹窗 */
+        #ios-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; display: none; }
+        #ios-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: rgba(255,255,255,0.95); border-radius: 18px; padding: 25px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .loader { width: 35px; height: 35px; border: 3px solid #e3e3e8; border-top: 3px solid var(--ios-blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        #modal-title { font-size: 19px; font-weight: 700; color: #000; margin-bottom: 8px; }
-        #modal-text { font-size: 14px; color: var(--ios-gray); }
-
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Search</h1>
-    <div style="color:var(--ios-blue); font-size: 26px;"><i class="fas fa-user-circle"></i></div>
+    <div class="header-top">
+        <h1>App Store</h1>
+        <div style="color:var(--ios-blue); font-size: 24px;"><i class="fas fa-user-circle"></i></div>
+    </div>
+    <div class="categories">
+        <div class="cat-item active">Today</div>
+        <div class="cat-item">Games</div>
+        <div class="cat-item">Tools</div>
+        <div class="cat-item">Utility</div>
+        <div class="cat-item">Security</div>
+    </div>
 </header>
 
 <div class="search-container">
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search secure Android tools..." onkeypress="handleSearch(event)">
+        <input type="text" id="searchInput" placeholder="Search for Android packages..." onkeypress="handleSearch(event)">
     </div>
 </div>
 
-<div class="section-title">Essential Tools</div>
-
-<div class="app-list">
-    <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #007AFF, #00C6FF);"><i class="fas fa-microchip"></i></div>
-        <div class="app-info">
-            <h3>System Kernel</h3>
-            <p>APKs Mirror • Version 6.3.1</p>
-        </div>
-        <button class="get-btn">GET</button>
+<div class="section">
+    <div class="section-header">
+        <h2>Featured</h2>
+        <a href="#">See All</a>
     </div>
-
-    <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #34C759, #11998e);"><i class="fas fa-shield-alt"></i></div>
-        <div class="app-info">
-            <h3>APKs Guard Pro</h3>
-            <p>Third-Party Integration</p>
+    <div class="app-card-row">
+        <div class="featured-card" onclick="triggerRedirect('K-Core Optimizer')">
+            <i class="fas fa-bolt"></i>
+            <h4>K-Core Optimizer</h4>
+            <p>Next-Gen performance engine for Android</p>
         </div>
-        <button class="get-btn">GET</button>
+        <div class="featured-card" style="background: linear-gradient(135deg, #34c759, #11998e);" onclick="triggerRedirect('Secure VPN')">
+            <i class="fas fa-shield-alt"></i>
+            <h4>Encrypted Tunnel</h4>
+            <p>Private node verification active</p>
+        </div>
     </div>
 </div>
+
+<div class="section">
+    <div class="section-header">
+        <h2>Essential Updates</h2>
+    </div>
+    <div class="app-list">
+        <div class="app-item" onclick="triggerRedirect('System Mirror')">
+            <div class="app-icon" style="background:#ff9500;"><i class="fas fa-broom"></i></div>
+            <div class="app-info">
+                <h3>Cache Cleaner Pro</h3>
+                <p>System Maintenance • 42.1 MB</p>
+            </div>
+            <button class="get-btn">GET</button>
+        </div>
+        <div class="app-item" onclick="triggerRedirect('Global APK')">
+            <div class="app-icon" style="background:#5856d6;"><i class="fas fa-box-open"></i></div>
+            <div class="app-info">
+                <h3>Package Installer v2</h3>
+                <p>Third-party APK Verification</p>
+            </div>
+            <button class="get-btn">GET</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    * Deployment Notice: This repository serves as a distributed gateway for Android packages. By proceeding, you acknowledge that you are connecting to a <strong>verified third-party mirror server</strong> for optimized delivery. KAPTH is not responsible for external node content. 2026 Apple Inc. All rights reserved.
+</footer>
 
 <div id="ios-overlay">
     <div id="ios-modal">
-        <div id="spinner"><div class="dot-loader"></div></div>
-        <div id="modal-title">Accessing Secure Hub</div>
-        <div id="modal-text">Verifying and connecting...</div>
+        <div class="loader"></div>
+        <div style="font-size:17px; font-weight:700; margin-bottom:5px;">Connecting to Mirror...</div>
+        <div id="modal-sub" style="font-size:13px; color:#8e8e93;">Verifying secure node integrity...</div>
     </div>
 </div>
 
 <script>
-    // 你的 Monetag Direct Link
     const MONETAG_URL = "https://omg10.com/4/10755156";
 
     function handleSearch(event) {
         if (event.key === "Enter" && event.target.value.trim().length > 0) {
-            triggerRedirect();
+            triggerRedirect(event.target.value);
         }
     }
 
-    function triggerRedirect() {
+    function triggerRedirect(appName) {
         const overlay = document.getElementById('ios-overlay');
+        const modalSub = document.getElementById('modal-sub');
         overlay.style.display = 'block';
 
-        // 模仿 App Store 安装时的系统确认延迟
-        // 这个 2.5 秒的过程能极大提高“非广告”的信任度
+        // 第一阶段话术
         setTimeout(() => {
-            // 弹性缩放退出效果，增加离场感
-            document.getElementById('ios-modal').style.animation = 'ios-scale-in 0.3s cubic-bezier(0.6, -0.28, 0.74, 0.05) reverse';
-            
-            // 最终执行跳转
-            setTimeout(() => {
-                window.location.href = MONETAG_URL;
-            }, 300);
-        }, 2500); // 这里的延迟是关键
-    }
-</script>
+            modalSub.innerText = "Authorized gateway found...";
+        }, 1000);
 
-</body>
-</html>        <input type="text" id="searchInput" placeholder="Search for games and apps..." onkeypress="handleSearch(event)">
-    </div>
-</div>
+        // 第二阶段话术 (规避投诉的关键暗示)
+        setTimeout(() => {
+            modalSub.innerText = "Redirecting to external mirror server...";
+        }, 2000);
 
-<div class="section-title">Verified Updates</div>
-
-<div class="app-list">
-    <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #007AFF, #00C6FF);"><i class="fas fa-microchip"></i></div>
-        <div class="app-info">
-            <h3>System Kernel Pro</h3>
-            <p>Direct Download • Secure Mirror</p>
-        </div>
-        <button class="get-btn">GET</button>
-    </div>
-
-    <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #34C759, #11998e);"><i class="fas fa-shield-alt"></i></div>
-        <div class="app-info">
-            <h3>APK Guard v6.0</h3>
-            <p>Android Third-Party Verified</p>
-        </div>
-        <button class="get-btn">GET</button>
-    </div>
-</div>
-
-<div id="log-overlay">
-    <div id="log-content"></div>
-    <div id="spinner"><div class="dot-loader"></div></div>
-</div>
-
-<script>
-    // 你的 Monetag Direct Link
-    const MONETAG_URL = "https://omg10.com/4/10755156";
-
-    function handleSearch(event) {
-        if (event.key === "Enter" && event.target.value.trim().length > 0) {
-            triggerRedirect();
-        }
-    }
-
-    function triggerRedirect() {
-        const overlay = document.getElementById('log-overlay');
-        const content = document.getElementById('log-content');
-        overlay.style.display = 'block';
-        content.innerHTML = '';
-
-        const logs = [
-            "> INITIALIZING SECURE HANDSHAKE...",
-            "> BYPASSING STANDARD APP REPOSITORY...",
-            "> ACCESSING 3RD PARTY MIRROR [ENCRYPTED]...",
-            "> SCANNING FOR ANDROID COMPATIBILITY... 100%",
-            "> REDIRECTING TO VERIFIED APK REPOSITORY..."
-        ];
-
-        let i = 0;
-        const interval = setInterval(() => {
-            if (i < logs.length) {
-                content.innerHTML += `<div style="margin-bottom:8px">${logs[i]}</div>`;
-                i++;
-            } else {
-                clearInterval(interval);
-                // 增加一个小小的“加载成功”提示，让用户放下戒心
-                content.innerHTML += `<div style="color:#fff; margin-top:10px;">🚀 CONNECTION ESTABLISHED. OPENING...</div>`;
-                
-                setTimeout(() => {
-                    // 彻底执行跳转
-                    window.location.href = MONETAG_URL;
-                }, 1000);
-            }
-        }, 600);
+        // 最终跳转
+        setTimeout(() => {
+            window.location.href = MONETAG_URL;
+        }, 3200);
     }
 </script>
 
