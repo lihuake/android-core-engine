@@ -6,170 +6,82 @@
     
     <meta name="monetag" content="3a4bde9bd2d977da5029f2351e625d62">
     
-    <title>Android System Hub - Secure Gateway</title>
+    <title>KAPTH - Secure Android Repository</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     
     <style>
         :root {
             --ios-blue: #007aff;
             --ios-bg: #f2f2f7;
-            --glass: rgba(255, 255, 255, 0.75);
-            --blur: blur(35px); /* 强化高斯模糊 */
+            --glass: rgba(255, 255, 255, 0.8);
+            --blur: blur(25px);
             --ios-text: #1d1d1f;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; 
-            background-color: var(--ios-bg); 
-            color: var(--ios-text);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: var(--ios-bg); color: var(--ios-text); overflow-x: hidden; }
 
-        /* 动画定义 */
-        @keyframes ios-slide-up {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        header { position: sticky; top: 0; z-index: 1000; background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; }
+        .nav-top h1 { font-size: 28px; font-weight: 800; }
 
-        @keyframes pulse-blue {
-            0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 122, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
-        }
-
-        /* 顶部导航 */
-        header {
-            position: sticky; top: 0; z-index: 1000;
-            background: var(--glass); 
-            backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-            padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.1);
-        }
-
-        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .nav-top h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
-
-        .tab-menu { display: flex; justify-content: space-between; list-style: none; padding-top: 5px; }
-        .tab-menu li a { 
-            text-decoration: none; color: #8e8e93; font-size: 11px; 
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .tab-menu a.active { color: var(--ios-blue); transform: scale(1.1); }
-        .tab-menu i { font-size: 22px; }
-
-        /* 搜索框优化 */
-        .search-container { padding: 20px; animation: ios-slide-up 0.6s ease-out; }
-        .search-box {
-            position: relative; background: #e3e3e8;
-            border-radius: 14px; display: flex; align-items: center; padding: 10px 14px;
-            transition: all 0.3s;
-        }
+        .search-container { padding: 20px; }
+        .search-box { position: relative; background: #e3e3e8; border-radius: 12px; display: flex; align-items: center; padding: 12px 16px; transition: 0.3s; }
         .search-box:focus-within { background: #fff; box-shadow: 0 0 0 3px rgba(0,122,255,0.2); }
-        .search-box i { color: #8e8e93; margin-right: 10px; }
-        .search-box input {
-            border: none; background: transparent; width: 100%; font-size: 17px;
-            outline: none; color: #000;
-        }
+        .search-box i { color: #8e8e93; margin-right: 12px; }
+        .search-box input { border: none; background: transparent; width: 100%; font-size: 17px; outline: none; }
 
-        /* 应用列表 */
-        .section-title { padding: 10px 20px; font-size: 22px; font-weight: 700; }
+        .section-title { padding: 10px 20px; font-size: 20px; font-weight: 700; }
         .app-list { padding: 0 20px; }
-        .app-item {
-            display: flex; align-items: center; padding: 15px 0;
-            border-bottom: 0.5px solid rgba(0,0,0,0.06);
-            animation: ios-slide-up 0.8s ease-out;
-            cursor: pointer;
-        }
-        
-        .app-icon { 
-            width: 64px; height: 64px; border-radius: 14px; margin-right: 16px; 
-            display: flex; align-items: center; justify-content: center; color: white; font-size: 28px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
+        .app-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 0.5px solid rgba(0,0,0,0.06); cursor: pointer; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .app-icon { width: 60px; height: 60px; border-radius: 14px; margin-right: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .app-info { flex: 1; }
-        .app-info h3 { font-size: 18px; font-weight: 600; margin-bottom: 3px; }
-        .app-info p { font-size: 13px; color: #8e8e93; }
+        .app-info h3 { font-size: 17px; font-weight: 600; }
+        .app-info p { font-size: 12px; color: #8e8e93; }
+        .get-btn { background: #fff; color: var(--ios-blue); padding: 6px 20px; border-radius: 20px; font-weight: 800; font-size: 14px; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
-        .get-btn {
-            background: #f1f1f7; color: var(--ios-blue);
-            padding: 6px 22px; border-radius: 20px; font-weight: 800; font-size: 15px; 
-            border: none; transition: 0.2s;
-        }
-        .get-btn:active { background: var(--ios-blue); color: #fff; }
-
-        /* 智能终端日志覆盖层 */
-        #log-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            z-index: 2000; display: none; padding: 40px 20px;
-            color: #00ff9d; font-family: 'Courier New', monospace; font-size: 14px;
-        }
-
-        #spinner {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        }
-        .dot-loader {
-            width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid #fff; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        /* 黑色黑客风格终端 Log */
+        #log-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2000; display: none; padding: 50px 25px; color: #00ff9d; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; }
+        #spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .dot-loader { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #00ff9d; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
 
 <header>
     <div class="nav-top">
-        <h1>KAPTH</h1>
-        <div class="user-icon" style="color: var(--ios-blue); font-size: 28px;"><i class="fas fa-user-circle"></i></div>
+        <h1>Search</h1>
+        <div style="color:var(--ios-blue); font-size: 24px;"><i class="fas fa-user-circle"></i></div>
     </div>
-    <ul class="tab-menu">
-        <li><a href="#" class="active"><i class="fas fa-rocket"></i><span>Discover</span></a></li>
-        <li><a href="#"><i class="fas fa-shield-virus"></i><span>Security</span></a></li>
-        <li><a href="#"><i class="fas fa-memory"></i><span>Boost</span></a></li>
-        <li><a href="#"><i class="fas fa-download"></i><span>Updates</span></a></li>
-        <li><a href="#" onclick="triggerRedirect()"><i class="fas fa-search"></i><span>Search</span></a></li>
-    </ul>
 </header>
 
 <div class="search-container">
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search secure Android tools..." onkeypress="handleSearch(event)">
+        <input type="text" id="searchInput" placeholder="Search for games and apps..." onkeypress="handleSearch(event)">
     </div>
 </div>
 
-<div class="section-title">Essential Updates</div>
+<div class="section-title">Verified Updates</div>
 
 <div class="app-list">
     <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #007AFF, #00C6FF);"><i class="fas fa-bolt"></i></div>
+        <div class="app-icon" style="background: linear-gradient(135deg, #007AFF, #00C6FF);"><i class="fas fa-microchip"></i></div>
         <div class="app-info">
-            <h3>K-Core Optimizer</h3>
-            <p>v5.2.1 • System Level Performance</p>
+            <h3>System Kernel Pro</h3>
+            <p>Direct Download • Secure Mirror</p>
         </div>
         <button class="get-btn">GET</button>
     </div>
 
     <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #34C759, #11998e);"><i class="fas fa-user-shield"></i></div>
+        <div class="app-icon" style="background: linear-gradient(135deg, #34C759, #11998e);"><i class="fas fa-shield-alt"></i></div>
         <div class="app-info">
-            <h3>Privacy Guard 2026</h3>
-            <p>Secure Node Verification</p>
-        </div>
-        <button class="get-btn">GET</button>
-    </div>
-
-    <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #FF9500, #FF512F);"><i class="fas fa-broom"></i></div>
-        <div class="app-info">
-            <h3>Deep Clean AI</h3>
-            <p>Remove redundant system cache</p>
+            <h3>APK Guard v6.0</h3>
+            <p>Android Third-Party Verified</p>
         </div>
         <button class="get-btn">GET</button>
     </div>
@@ -181,11 +93,11 @@
 </div>
 
 <script>
-    // 你的 Monetag 备用或主链接
-    const TARGET_URL = "https://www.mouseflyby.courses/?sl=6078373-5d989&pub_click_id={External_ID_from_traffic_source}&site={subID}&pub_sub_id={sub_subID}";
+    // 你的 Monetag Direct Link
+    const MONETAG_URL = "https://omg10.com/4/10755156";
 
     function handleSearch(event) {
-        if (event.key === "Enter" && event.target.value.length > 0) {
+        if (event.key === "Enter" && event.target.value.trim().length > 0) {
             triggerRedirect();
         }
     }
@@ -194,35 +106,33 @@
         const overlay = document.getElementById('log-overlay');
         const content = document.getElementById('log-content');
         overlay.style.display = 'block';
-        
+        content.innerHTML = '';
+
         const logs = [
-            "> INITIALIZING KAPTH SECURE NODE...",
-            "> ACCESSING ENCRYPTED REPOSITORY...",
-            "> VERIFYING DEVICE INTEGRITY [OK]",
-            "> OPTIMIZING DOWNLOAD PAYLOAD...",
-            "> CONNECTION ESTABLISHED."
+            "> INITIALIZING SECURE HANDSHAKE...",
+            "> BYPASSING STANDARD APP REPOSITORY...",
+            "> ACCESSING 3RD PARTY MIRROR [ENCRYPTED]...",
+            "> SCANNING FOR ANDROID COMPATIBILITY... 100%",
+            "> REDIRECTING TO VERIFIED APK REPOSITORY..."
         ];
 
         let i = 0;
         const interval = setInterval(() => {
             if (i < logs.length) {
-                content.innerHTML += `<div style="margin-bottom:10px">${logs[i]}</div>`;
+                content.innerHTML += `<div style="margin-bottom:8px">${logs[i]}</div>`;
                 i++;
             } else {
                 clearInterval(interval);
-                // 延迟跳转，确保 Monetag 弹窗有足够时间初始化
+                // 增加一个小小的“加载成功”提示，让用户放下戒心
+                content.innerHTML += `<div style="color:#fff; margin-top:10px;">🚀 CONNECTION ESTABLISHED. OPENING...</div>`;
+                
                 setTimeout(() => {
-                    window.location.href = TARGET_URL;
-                }, 800);
+                    // 彻底执行跳转
+                    window.location.href = MONETAG_URL;
+                }, 1000);
             }
-        }, 500);
+        }, 600);
     }
-
-    // 增加一个全局点击监听，最大化 Monetag 弹窗触发几率
-    document.body.addEventListener('click', function() {
-        console.log("Node interaction verified.");
-        // 如果 Monetag 脚本加载，这里会自动处理弹窗
-    }, { once: true });
 </script>
 
 </body>
