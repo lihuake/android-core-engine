@@ -1,387 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Android Core Hub - Secure Tools & Discovery</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    :root {
-      --primary: #007aff;
-      --green: #34c759;
-      --bg: #f5f5f7;
-      --card: rgba(255,255,255,0.92);
-      --blur: blur(24px);
-      --shadow: 0 8px 32px rgba(0,0,0,0.08);
-      --text: #1d1d1f;
-      --gray: #6e6e73;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: var(--blur);
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-      z-index: 1000;
-      padding: 12px 20px;
-    }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    .user-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--primary);
-      border-radius: 50%;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-    }
-    .main-nav {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin: 12px 0 8px;
-      font-size: 0.95rem;
-    }
-    .main-nav a {
-      color: var(--gray);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-    .main-nav a:hover, .main-nav a.active { color: var(--primary); }
-    .search-container {
-      padding: 80px 20px 20px;
-      max-width: 680px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .search-box {
-      position: relative;
-      background: rgba(255,255,255,0.9);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      backdrop-filter: var(--blur);
-      overflow: hidden;
-    }
-    .search-box input {
-      width: 100%;
-      padding: 16px 20px 16px 52px;
-      border: none;
-      background: transparent;
-      font-size: 1.1rem;
-      outline: none;
-      color: var(--text);
-    }
-    .search-box i {
-      position: absolute;
-      left: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      font-size: 1.3rem;
-    }
-    .search-hint {
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      font-size: 0.9rem;
-      pointer-events: none;
-    }
-    .section-title {
-      padding: 0 20px 12px;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .app-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 16px;
-      padding: 0 20px;
-      margin-bottom: 60px;
-    }
-    .app-card {
-      background: var(--card);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      cursor: pointer;
-    }
-    .app-card:hover {
-      transform: translateY(-8px) scale(1.04);
-    }
-    .app-icon {
-      height: 120px;
-      background: linear-gradient(135deg, #007aff, #34c759);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 3rem;
-    }
-    .app-body {
-      padding: 12px;
-      text-align: center;
-    }
-    .app-body h4 {
-      font-size: 1rem;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-    .app-body p {
-      font-size: 0.8rem;
-      color: var(--gray);
-    }
-    .fab-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 64px;
-      height: 64px;
-      background: var(--primary);
-      border-radius: 50%;
-      color: white;
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 32px rgba(0,122,255,0.4);
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    .fab-btn:hover { transform: scale(1.1); }
-    #log-overlay {
-      position: fixed;
-      bottom: 100px;
-      left: 20px;
-      right: 20px;
-      background: rgba(0,0,0,0.75);
-      color: #00ff9d;
-      padding: 16px;
-      border-radius: 16px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      max-height: 180px;
-      overflow-y: auto;
-      display: none;
-      z-index: 2000;
-      backdrop-filter: blur(10px);
-    }
-    #spinner {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 3000;
-    }
-    .dot-loader {
-      width: 56px;
-      height: 56px;
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 768px) {
-      .app-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-      .search-container { padding-top: 100px; }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="top-bar">
-      <div class="logo">CoreHub</div>
-      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
-    </div>
-    <ul class="main-nav">
-      <li><a href="#" class="active">Today</a></li>
-      <li><a href="#">Games</a></li>
-      <li><a href="#">Apps</a></li>
-      <li><a href="#">Arcade</a></li>
-      <li><a href="#">Search</a></li>
-    </ul>
-  </header>
-
-  <div class="search-container">
-    <div class="search-box">
-      <i class="fas fa-search"></i>
-      <input type="text" id="searchInput" placeholder="Search Android tools, VPNs, boosters..." onkeypress="handleSearch(event)" />
-      <span class="search-hint">Secure & Fast</span>
-    </div>
-  </div>
-
-  <div class="section-title">Recommended for You</div>
-  <div class="app-grid">
-    <div class="app-card" onclick="triggerRedirect()">
-      <div class="app-icon"><i class="fas fa-bolt"></i></div>
-      <div class="app-body">
-        <h4>Turbo Booster</h4>
-        <p>CPU & RAM optimization</p>
-      </div>
-    </div>
-    <div class="app-card" onclick="triggerRedirect()">
-      <div class="app-icon"><i class="fas fa-shield-alt"></i></div>
-      <div class="app-body">
-        <h4>Secure Guard</h4>
-        <p>Advanced privacy shield</p>
-      </div>
-    </div>
-    <div class="app-card" onclick="triggerRedirect()">
-      <div class="app-icon"><i class="fas fa-broom"></i></div>
-      <div class="app-body">
-        <h4>Clean Master</h4>
-        <p>Deep junk removal</p>
-      </div>
-    </div>
-    <div class="app-card" onclick="triggerRedirect()">
-      <div class="app-icon"><i class="fas fa-lock"></i></div>
-      <div class="app-body">
-        <h4>VPN Tunnel</h4>
-        <p>Encrypted connection</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="fab-btn" onclick="triggerRedirect()"><i class="fas fa-rocket"></i></div>
-
-  <div id="log-overlay"></div>
-  <div id="spinner"><div class="dot-loader"></div></div>
-
-  <script>
-    // 主链接
-    const PRIMARY_LINK = "https://www.mouseflyby.courses/?sl=6078373-5d989&pub_click_id={External_ID_from_traffic_source}&site={subID}&pub_sub_id={sub_subID}";
-    // 备用链接（提前创建第二个 SmartLink，或用其他联盟）
-    const FALLBACK_LINK = "https://备用链接.com/?sl=备用ID";  // 替换成你的备用
-
-    function handleSearch(event) {
-      if (event.key === "Enter") {
-        triggerRedirect();
-      }
-    }
-
-    function triggerRedirect() {
-      const log = document.getElementById('log-overlay');
-      const spinner = document.getElementById('spinner');
-
-      log.style.display = 'block';
-      spinner.style.display = 'block';
-      log.innerHTML = '';
-
-      const messages = [
-        "> Initializing Secure Engine...",
-        "> Authenticating Device...",
-        "> Fetching Optimized Repository...",
-        "> Routing to Verified Portal..."
-      ];
-
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i < messages.length) {
-          log.innerHTML += `<div style="margin-bottom:6px">${messages[i]}</div>`;
-          log.scrollTop = log.scrollHeight;
-          i++;
-        } else {
-          clearInterval(interval);
-          spinner.style.display = 'none';
-
-          // 尝试新标签打开主链接
-          const newTab = window.open(PRIMARY_LINK, '_blank');
-
-          if (newTab) {
-            // 监控是否去 Google
-            const check = setInterval(() => {
-              try {
-                const url = newTab.location.href.toLowerCase();
-                if (url.includes('play.google') || url.includes('google.com/play') || url.includes('googleplay') || url.includes('googleapis') || url.includes('youtube.com/premium')) {
-                  clearInterval(check);
-                  newTab.location.href = FALLBACK_LINK;
-                  Swal.fire({
-                    title: 'Alternative Route',
-                    text: 'Switching to secure backup portal...',
-                    icon: 'info',
-                    timer: 2500,
-                    showConfirmButton: false
-                  });
-                }
-              } catch (e) {} // 跨域正常忽略
-            }, 1500);
-
-            // 30秒超时停止监控
-            setTimeout(() => clearInterval(check), 30000);
-          } else {
-            // 弹窗被阻挡，直接本页切备用
-            window.location.href = FALLBACK_LINK;
-          }
-
-          log.style.display = 'none';
-        }
-      }, 800);
-    }
-
-    // 搜索框提示动画
-    document.getElementById('searchInput').addEventListener('focus', function() {
-      this.placeholder = "e.g. System Booster, VPN Secure, APK Cleaner...";
-    });
-    document.getElementById('searchInput').addEventListener('blur', function() {
-      this.placeholder = "Search Android tools...";
-    });
-  </script>
-</body>
-</html>            padding: 6px 20px; border-radius: 20px; font-weight: 700; font-size: 14px; border: none;
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <meta name="monetag" content="3a4bde9bd2d977da5029f2351e625d62">
+    
+    <title>Android System Hub - Secure Gateway</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
+    <style>
+        :root {
+            --ios-blue: #007aff;
+            --ios-bg: #f2f2f7;
+            --glass: rgba(255, 255, 255, 0.75);
+            --blur: blur(35px); /* 强化高斯模糊 */
+            --ios-text: #1d1d1f;
         }
 
-        /* 终端仿真 Log */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; 
+            background-color: var(--ios-bg); 
+            color: var(--ios-text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 动画定义 */
+        @keyframes ios-slide-up {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 122, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
+        }
+
+        /* 顶部导航 */
+        header {
+            position: sticky; top: 0; z-index: 1000;
+            background: var(--glass); 
+            backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.1);
+        }
+
+        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .nav-top h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+
+        .tab-menu { display: flex; justify-content: space-between; list-style: none; padding-top: 5px; }
+        .tab-menu li a { 
+            text-decoration: none; color: #8e8e93; font-size: 11px; 
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-menu a.active { color: var(--ios-blue); transform: scale(1.1); }
+        .tab-menu i { font-size: 22px; }
+
+        /* 搜索框优化 */
+        .search-container { padding: 20px; animation: ios-slide-up 0.6s ease-out; }
+        .search-box {
+            position: relative; background: #e3e3e8;
+            border-radius: 14px; display: flex; align-items: center; padding: 10px 14px;
+            transition: all 0.3s;
+        }
+        .search-box:focus-within { background: #fff; box-shadow: 0 0 0 3px rgba(0,122,255,0.2); }
+        .search-box i { color: #8e8e93; margin-right: 10px; }
+        .search-box input {
+            border: none; background: transparent; width: 100%; font-size: 17px;
+            outline: none; color: #000;
+        }
+
+        /* 应用列表 */
+        .section-title { padding: 10px 20px; font-size: 22px; font-weight: 700; }
+        .app-list { padding: 0 20px; }
+        .app-item {
+            display: flex; align-items: center; padding: 15px 0;
+            border-bottom: 0.5px solid rgba(0,0,0,0.06);
+            animation: ios-slide-up 0.8s ease-out;
+            cursor: pointer;
+        }
+        
+        .app-icon { 
+            width: 64px; height: 64px; border-radius: 14px; margin-right: 16px; 
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 28px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .app-info { flex: 1; }
+        .app-info h3 { font-size: 18px; font-weight: 600; margin-bottom: 3px; }
+        .app-info p { font-size: 13px; color: #8e8e93; }
+
+        .get-btn {
+            background: #f1f1f7; color: var(--ios-blue);
+            padding: 6px 22px; border-radius: 20px; font-weight: 800; font-size: 15px; 
+            border: none; transition: 0.2s;
+        }
+        .get-btn:active { background: var(--ios-blue); color: #fff; }
+
+        /* 智能终端日志覆盖层 */
         #log-overlay {
-            position: fixed; bottom: 80px; left: 20px; right: 20px;
-            background: rgba(0,0,0,0.8); color: #00ff00; padding: 15px;
-            border-radius: 12px; font-family: monospace; font-size: 12px;
-            display: none; z-index: 2000; pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            z-index: 2000; display: none; padding: 40px 20px;
+            color: #00ff9d; font-family: 'Courier New', monospace; font-size: 14px;
         }
 
-        /* 底部加载指示器 */
-        #spinner { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000; }
-        .dot-loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--ios-blue); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #spinner {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .dot-loader {
+            width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #fff; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
 <header>
     <div class="nav-top">
-        <h1>Search</h1>
-        <div class="user-icon"><i class="fas fa-user"></i></div>
+        <h1>KAPTH</h1>
+        <div class="user-icon" style="color: var(--ios-blue); font-size: 28px;"><i class="fas fa-user-circle"></i></div>
     </div>
     <ul class="tab-menu">
-        <li><a href="#" class="active"><i class="fas fa-rocket"></i><span>Today</span></a></li>
-        <li><a href="#"><i class="fas fa-gamepad"></i><span>Games</span></a></li>
-        <li><a href="#"><i class="fas fa-th-large"></i><span>Apps</span></a></li>
-        <li><a href="#"><i class="fas fa-star"></i><span>Arcade</span></a></li>
+        <li><a href="#" class="active"><i class="fas fa-rocket"></i><span>Discover</span></a></li>
+        <li><a href="#"><i class="fas fa-shield-virus"></i><span>Security</span></a></li>
+        <li><a href="#"><i class="fas fa-memory"></i><span>Boost</span></a></li>
+        <li><a href="#"><i class="fas fa-download"></i><span>Updates</span></a></li>
         <li><a href="#" onclick="triggerRedirect()"><i class="fas fa-search"></i><span>Search</span></a></li>
     </ul>
 </header>
@@ -389,86 +140,89 @@
 <div class="search-container">
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search for Android tools..." onkeypress="handleSearch(event)">
+        <input type="text" id="searchInput" placeholder="Search secure Android tools..." onkeypress="handleSearch(event)">
     </div>
 </div>
 
-<div class="section-title">Suggested for You</div>
+<div class="section-title">Essential Updates</div>
 
 <div class="app-list">
     <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #FF9500, #FFCC00);"><i class="fas fa-bolt"></i></div>
+        <div class="app-icon" style="background: linear-gradient(135deg, #007AFF, #00C6FF);"><i class="fas fa-bolt"></i></div>
         <div class="app-info">
-            <h3>System Booster Pro</h3>
-            <p>Optimize kernel & CPU performance</p>
+            <h3>K-Core Optimizer</h3>
+            <p>v5.2.1 • System Level Performance</p>
         </div>
         <button class="get-btn">GET</button>
     </div>
 
     <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #34C759, #248A3D);"><i class="fas fa-shield-halved"></i></div>
+        <div class="app-icon" style="background: linear-gradient(135deg, #34C759, #11998e);"><i class="fas fa-user-shield"></i></div>
         <div class="app-info">
-            <h3>Secure Tunnel VPN</h3>
-            <p>Privacy-first encrypted gateway</p>
+            <h3>Privacy Guard 2026</h3>
+            <p>Secure Node Verification</p>
         </div>
         <button class="get-btn">GET</button>
     </div>
 
     <div class="app-item" onclick="triggerRedirect()">
-        <div class="app-icon" style="background: linear-gradient(135deg, #007AFF, #0051A8);"><i class="fas fa-broom"></i></div>
+        <div class="app-icon" style="background: linear-gradient(135deg, #FF9500, #FF512F);"><i class="fas fa-broom"></i></div>
         <div class="app-info">
-            <h3>Clean Master AI</h3>
-            <p>Deep scan and file management</p>
+            <h3>Deep Clean AI</h3>
+            <p>Remove redundant system cache</p>
         </div>
         <button class="get-btn">GET</button>
     </div>
 </div>
 
-<div id="log-overlay"></div>
-<div id="spinner"><div class="dot-loader"></div></div>
+<div id="log-overlay">
+    <div id="log-content"></div>
+    <div id="spinner"><div class="dot-loader"></div></div>
+</div>
 
 <script>
-    // 你的核心盈利链接
-    const SMART_LINK = "https://www.mouseflyby.courses/?sl=6078373-5d989&pub_click_id={External_ID_from_traffic_source}&site={subID}&pub_sub_id={sub_subID}";
+    // 你的 Monetag 备用或主链接
+    const TARGET_URL = "https://www.mouseflyby.courses/?sl=6078373-5d989&pub_click_id={External_ID_from_traffic_source}&site={subID}&pub_sub_id={sub_subID}";
 
-    // 搜索直达逻辑：输入文字按回车直接重定向
     function handleSearch(event) {
-        if (event.key === "Enter") {
+        if (event.key === "Enter" && event.target.value.length > 0) {
             triggerRedirect();
         }
     }
 
     function triggerRedirect() {
-        const log = document.getElementById('log-overlay');
-        const spinner = document.getElementById('spinner');
+        const overlay = document.getElementById('log-overlay');
+        const content = document.getElementById('log-content');
+        overlay.style.display = 'block';
         
-        log.style.display = 'block';
-        spinner.style.display = 'block';
-        
-        const messages = [
-            "> Initializing Secure Engine...",
-            "> Authenticating Device Signature...",
-            "> Fetching US/UK Edge Cache...",
-            "> Routing to Verified Repository..."
+        const logs = [
+            "> INITIALIZING KAPTH SECURE NODE...",
+            "> ACCESSING ENCRYPTED REPOSITORY...",
+            "> VERIFYING DEVICE INTEGRITY [OK]",
+            "> OPTIMIZING DOWNLOAD PAYLOAD...",
+            "> CONNECTION ESTABLISHED."
         ];
 
         let i = 0;
         const interval = setInterval(() => {
-            if (i < messages.length) {
-                log.innerHTML += `<div style="margin-bottom:5px">${messages[i]}</div>`;
+            if (i < logs.length) {
+                content.innerHTML += `<div style="margin-bottom:10px">${logs[i]}</div>`;
                 i++;
             } else {
                 clearInterval(interval);
-                // 最终重定向
-                window.location.href = SMART_LINK;
+                // 延迟跳转，确保 Monetag 弹窗有足够时间初始化
+                setTimeout(() => {
+                    window.location.href = TARGET_URL;
+                }, 800);
             }
-        }, 600);
+        }, 500);
     }
 
-    // 极速加载逻辑
-    window.addEventListener('load', () => {
-        console.log("System Ready.");
-    });
+    // 增加一个全局点击监听，最大化 Monetag 弹窗触发几率
+    document.body.addEventListener('click', function() {
+        console.log("Node interaction verified.");
+        // 如果 Monetag 脚本加载，这里会自动处理弹窗
+    }, { once: true });
 </script>
 
 </body>
