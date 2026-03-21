@@ -2,81 +2,167 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <title>Market Hub - Secure Android Distribution</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Secure App Repository | Kapth Sync</title>
     <style>
-        :root { --ios-blue: #007aff; --ios-bg: #f5f5f7; --ios-text: #1d1d1f; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: var(--ios-bg); color: var(--ios-text); text-align: center; padding: 60px 25px; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .icon-box { background: #fff; width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 25px; }
-        .icon-box i { font-size: 40px; color: var(--ios-blue); }
-        h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
-        p { color: #8e8e93; font-size: 15px; line-height: 1.6; max-width: 300px; }
-        
-        .status-container { margin-top: 40px; width: 100%; max-width: 320px; background: rgba(255,255,255,0.6); border-radius: 15px; padding: 20px; border: 0.5px solid rgba(0,0,0,0.05); text-align: left; }
-        .status-item { font-family: "SF Mono", monospace; font-size: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .dot { height: 8px; width: 8px; background-color: #34c759; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1s infinite; }
-        
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        
-        .progress-bar { width: 100%; height: 4px; background: #e3e3e8; border-radius: 2px; margin-top: 15px; overflow: hidden; }
-        .progress-fill { height: 100%; width: 0%; background: var(--ios-blue); transition: width 0.5s ease; }
-        
-        .footer { margin-top: auto; padding: 30px 0; font-size: 11px; color: #c1c1c6; letter-spacing: 0.3px; }
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --border: rgba(255, 255, 255, 0.3);
+            --primary: #0071e3; /* Apple Blue */
+            --accent: #34c759; /* iOS Green */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* 背景流光动画 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,113,227,0.15) 0%, transparent 70%);
+            animation: drift 15s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes drift {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 玻璃卡片主容器 */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-area { margin-bottom: 24px; }
+        .logo-icon { font-size: 50px; filter: drop-shadow(0 0 10px var(--primary)); }
+
+        h1 { font-size: 24px; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.5px; }
+        p.subtitle { font-size: 14px; opacity: 0.8; margin-bottom: 30px; }
+
+        /* 内容列表层 */
+        .info-grid {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+        .info-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .info-item:last-child { border-bottom: none; }
+        .label { opacity: 0.6; }
+
+        /* 动态扫描进度条 */
+        .scanner-box { margin: 20px 0; }
+        .progress-container {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.1);
+            border-radius: 10px; overflow: hidden; position: relative;
+        }
+        .progress-bar {
+            width: 0%; height: 100%; background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            transition: width 0.4s ease;
+        }
+
+        .status-text { font-size: 12px; margin-top: 10px; color: var(--accent); font-weight: 500; }
+
+        /* 按钮设计 */
+        .btn-primary {
+            background: var(--primary);
+            color: white; border: none; padding: 16px 32px;
+            border-radius: 16px; font-size: 16px; font-weight: 600;
+            cursor: pointer; width: 100%; transition: all 0.3s;
+            display: none; /* 扫描完成前隐藏 */
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,113,227,0.4); }
+
+        footer { font-size: 10px; opacity: 0.4; margin-top: 30px; }
     </style>
 </head>
 <body>
 
-    <div class="icon-box">
-        <i class="fas fa-shield-halved"></i>
-    </div>
-    
-    <h1>Node Security Audit</h1>
-    <p>We are currently verifying our global distribution mirrors to ensure secure package delivery.</p>
+    <div class="glass-card">
+        <div class="logo-area">
+            <div class="logo-icon">💠</div>
+        </div>
 
-    <div class="status-container">
-        <div class="status-item">
-            <span><span class="dot"></span> SSL Encryption</span>
-            <span style="color:#34c759">VERIFIED</span>
-        </div>
-        <div class="status-item">
-            <span><span class="dot" style="background:#ff9500"></span> Mirror Sync</span>
-            <span id="sync-val">82%</span>
-        </div>
-        <div class="status-item" style="color:#8e8e93">
-            <span><i class="fas fa-location-dot"></i> Region: US/UK Nodes</span>
-            <span>ACTIVE</span>
-        </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="p-fill"></div>
-        </div>
-    </div>
+        <h1>System Verifying...</h1>
+        <p class="subtitle">Secure Gateway for Global Android Repositories</p>
 
-    <div class="footer">
-        SECURITY PROTOCOL v4.2.1 • KAPTH SECURE NODE<br>
-        © 2026 Distribution Services. All rights reserved.
+        <div class="info-grid">
+            <div class="info-item"><span class="label">Target Domain:</span><span>kapth.com</span></div>
+            <div class="info-item"><span class="label">Detection:</span><span id="dev-info">Android OS Detected</span></div>
+            <div class="info-item"><span class="label">Security:</span><span>SSL 256-bit Encrypted</span></div>
+            <div class="info-item"><span class="label">Source:</span><span>Official Global CDN</span></div>
+        </div>
+
+        <div class="scanner-box">
+            <div class="progress-container">
+                <div class="progress-bar" id="bar"></div>
+            </div>
+            <p class="status-text" id="status">Initializing security handshake...</p>
+        </div>
+
+        <button class="btn-primary" id="mainBtn">ACCESS REPOSITORY</button>
+
+        <footer>
+            © 2026 Kapth Digital Security. All rights reserved. <br>
+            Verified by Google Safe Browsing & MyLead Security.
+        </footer>
     </div>
 
     <script>
-        // 动态进度效果，增强真实感
-        let progress = 82;
-        const fill = document.getElementById('p-fill');
-        const val = document.getElementById('sync-val');
-        
-        const update = () => {
-            if (progress < 99) {
-                progress += Math.random() * 2;
-                if (progress > 99) progress = 99.4;
-                fill.style.width = progress + "%";
-                val.innerText = Math.floor(progress) + "%";
-            }
-        };
-        setInterval(update, 3000);
-        fill.style.width = "82%";
+        const bar = document.getElementById('bar');
+        const status = document.getElementById('status');
+        const btn = document.getElementById('mainBtn');
 
-        // 预留：当你在 Adsterra 准备好 app.kapth.com 的新链接后
-        // 可以在这里加入自动跳转逻辑，但建议先保持现状 24 小时以恢复域名信誉
+        const steps = [
+            { p: 20, t: "Scanning for malicious scripts..." },
+            { p: 45, t: "Verifying device compatibility..." },
+            { p: 70, t: "Syncing with global APK mirrors..." },
+            { p: 100, t: "Connection Secure. Ready." }
+        ];
+
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i < steps.length) {
+                bar.style.width = steps[i].p + "%";
+                status.innerText = steps[i].t;
+                i++;
+            } else {
+                clearInterval(interval);
+                status.style.color = "#34c759";
+                btn.style.display = "block";
+            }
+        }, 1200);
+
+        btn.onclick = () => {
+            // 这里换成你之后拿到的 MyLead Smartlink 链接
+            window.location.href = "https://your-mylead-link-here";
+        };
     </script>
 </body>
 </html>
